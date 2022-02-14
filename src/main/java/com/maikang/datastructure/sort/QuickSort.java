@@ -69,7 +69,8 @@ public class QuickSort {
     }
 
     public static void main(String[] args) {
-        int[] nums = {1, 6, 2, 4, 9, 22, 99, 23, 66};
+//        int[] nums = {1, 6, 2, 4, 9, 22, 99, 23, 66};
+        int[] nums = {5,2,3,1};
 //        new QuickSort().sort2(nums, 0, nums.length-1);
         new QuickSort().sort(nums, 0, nums.length-1);
         System.out.println(Arrays.toString(nums));
