@@ -1,5 +1,6 @@
 package com.maikang.datastructure.tree.bst;
 
+
 import static com.maikang.datastructure.tree.bst.TreeNode.getHeight;
 
 public class AVLTree {
@@ -119,10 +120,7 @@ public class AVLTree {
      * @param node
      */
     private void add(TreeNode root, TreeNode node) {
-        // insert it to the right
-        if (node.val == root.val) {
-            throw new RuntimeException("values of the tree must be unique!");
-        } else if (node.val > root.val) {
+        if (node.val > root.val) {
             if (root.right == null) {
                 root.right = node;
                 node.parent = root;
@@ -156,17 +154,14 @@ public class AVLTree {
     }
 
     private void rebalance(TreeNode node) {
-        TreeNode parent = node.parent;
-        Boolean isNodeLeftChildOfItsParent = parent == null ? null : node == parent.left;
-
         // right child
         if (getHeight(node.right) - getHeight(node.left) > 1) {
             // right subtree
             if (getHeight(node.right.right) > getHeight(node.right.left)) {
                 // left rotate
-                node = leftRotate(node);
+                leftRotate(node);
             } else {
-                node = rightLeftRotate(node);
+                rightLeftRotate(node);
             }
         }
         else if (getHeight(node.right) - getHeight(node.left) < -1)
@@ -174,86 +169,72 @@ public class AVLTree {
             // left subtree
             if (getHeight(node.left.left) > getHeight(node.left.right)) {
                 // right rotate
-                node = rightRotate(node);
+                rightRotate(node);
             } else {
-                node = leftRightRotate(node);
+                leftRightRotate(node);
             }
 
         }
-
-        // rebuild parent relationship: connect `parent` pointer
-        node.parent = parent;
-        if (parent == null) root = node;
-        else {
-            if (isNodeLeftChildOfItsParent) parent.left = node;
-            else parent.right = node;
-        }
     }
 
-    public static TreeNode leftRotate(TreeNode grand) {
+    public void leftRotate(TreeNode grand) {
         TreeNode tmp = grand.right;
 
-        grand.right = tmp.left;
+        connectTmpWithGrandsParent(grand, tmp);
 
-        // AVL specific
+        grand.right = tmp.left;
         if (tmp.left != null)
             tmp.left.parent = tmp;
 
-
         tmp.left = grand;
-
-        // AVL specific
         grand.parent = tmp;
 
         // AVL specific: update heights which has changed
         grand.refreshHeight();
         tmp.refreshHeight();
-
-        return tmp;
     }
 
-    public static TreeNode rightRotate(TreeNode grand) {
+    public void rightRotate(TreeNode grand) {
         TreeNode tmp = grand.left;
 
-        grand.left = tmp.right;
+        connectTmpWithGrandsParent(grand, tmp);
 
-        // AVL specific
+        grand.left = tmp.right;
         if (tmp.right != null)
             tmp.right.parent = tmp;
 
         tmp.right = grand;
-        // AVL specific
         grand.parent = tmp;
 
         // AVL specific update heights which has changed
         grand.refreshHeight();
         tmp.refreshHeight();
-
-        return tmp;
     }
 
-    public static TreeNode rightLeftRotate(TreeNode grand) {
+    private void connectTmpWithGrandsParent(TreeNode grand, TreeNode tmp) {
+        tmp.parent = grand.parent;
+        if (grand.parent == null) root = tmp;
+        else {
+            boolean isLeftChild = grand.parent.left == grand;
+            if (isLeftChild) {
+                tmp.parent.left = tmp;
+            } else {
+                tmp.parent.right = tmp;
+            }
+        }
+    }
+
+    public void rightLeftRotate(TreeNode grand) {
         // do a right rotation of parent.
-        TreeNode tmp = rightRotate(grand.right);
-
-        // AVL specific
-        grand.right = tmp;
-        tmp.parent = grand;
-
+        rightRotate(grand.right);
         // do a left rotation of grand;
-        return leftRotate(grand);
+        leftRotate(grand);
     }
 
-    public static TreeNode leftRightRotate(TreeNode grand) {
-        // do a left rotation of parent.
-        TreeNode tmp = leftRotate(grand.left);
+    public void leftRightRotate(TreeNode grand) {
+        leftRotate(grand.left);
 
-        // AVL specific
-        grand.left = tmp;
-        tmp.parent = grand;
-
-        // do a left rotation of grand;
-        return rightRotate(grand);
+        rightRotate(grand);
     }
 
     public static void main(String[] args) {
