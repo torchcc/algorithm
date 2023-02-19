@@ -32,7 +32,7 @@ package com.maikang.datastructure.tree.bst.redblack;
  */
 
 
-public class RedBlackTree<K extends Comparable<?>, V> implements IRedBlackTree<K, V> {
+public class RedBlackTree<K extends Comparable<?>, V> implements IBinarySearchTree<K, V> {
     private Node<K, V> root;
     private int size;
 
@@ -244,9 +244,9 @@ public class RedBlackTree<K extends Comparable<?>, V> implements IRedBlackTree<K
         int[] arr = new int[]{43, 18, 22, 9, 21, 6, 8, 20, 63, 50, 62, 51};
         for (int num : arr) {
             tree.add(num, num);
-            BTreePrinter.printNode(tree.root);
+            System.out.printf("adding %d...%n", num);
             System.out.println("-------");
-
+            BTreePrinter.printNode(tree.root);
         }
 
         System.out.println("===============");
